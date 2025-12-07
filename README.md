@@ -1,127 +1,70 @@
 # GIS Project Starter – TIGER 2020 Boundary Clipping Tool
 
-## 1. Purpose of the Program
+## Description
 
-This program automates downloading and processing TIGER/Line 2020 geospatial datasets from the U.S. Census Bureau. It allows the user to define a geographic boundary using one of three inputs:
+This program provides a Python-based workflow for automatically downloading, processing, and clipping TIGER/Line 2020 geopsatial datasets from the U.S. Census Bureau.  It allows the user to define a geographic boundary using one of three inputs:
 
 - A U.S. **state** (full name or 2-letter postal code)
-- A **city/place** within a given state
+- A **city/place** within a given state (City and State)
 - A **county** using its 5-digit **FIPS** (GEOID) code
 
-The script then:
-- Downloads the required TIGER/Line datasets  
-- Constructs the corresponding polygon boundary  
-- Clips primary/secondary roads and counties to that boundary  
-- Outputs shapefiles ready for GIS analysis
+The script finds the necessary TIGER/Line shapefiles and constructs the boundary polygon, aligns coordinate reference systems, clips both roads and counties to the selected area, and outputs ready-to-use shapefiles for GIS analysis. 
 
-Its purpose is to demonstrate automated geospatial data acquisition, boundary construction, CRS alignment, and vector clipping using Python and GeoPandas.
+The tool is intended for **GIS students**, **data analysts**, and **beginners** learning spatial data processing with Python. No advanced GIS background is required, only basic GIS and Python familiarity.
 
----
+This project demonstrates key workflows in Python-based GIS, such as automated data acquisition, vector boundary modeling, CRS management, spatial overlay analysis, and file handling/production.
 
-## 2. Intended / Potential Users
 
-This program is suited for:
+## Getting Started
 
-- **GIS students** learning Python-based geoprocessing  
-- **Instructors** evaluating student work with TIGER/Line and spatial clipping  
-- **Analysts** who want reproducible, script-based boundary clipping  
-- Anyone needing a simple tool to generate boundary-specific geospatial layers
+### Dependencies
+Before running the program, make sure you have: 
+- **Python 3.10 or newer** (GeoPandas installation is easiest with these versions)
+- Internet access for the first dataset download. Downloaded files are cached and reused.
+- The following Python packages:
+  - `geopandas`
+  - `requests`
+  - `shapely` (GeoPandas dependency)
+  - `fiona` (GeoPandas dependency)
+  - `pyproj`
+  - `pandas`
 
-Only basic GIS and Python familiarity is required.
+### Environment Setup
 
----
+**Using Conda (recommended):**  
+conda create -n gis_project python=3.11  
+conda activate gis_project  
+conda install -c conda-forge geopandas requests  
 
-## 3. Programming and Execution Environment
+**Using pip (only if GDAL is already working):**  
+pip install geopandas requests  
 
-### 3.1 Programming Language
-- Python **3.10+**
+### Operating System  
+The program is compatible with **Windows**, **macOS**, and **Linux**.  
 
-### 3.2 Required Packages
-- `geopandas`
-- `requests`
-- `shapely` (GeoPandas dependency)
-- `fiona` (GeoPandas dependency)
-- `pyproj`
-- `pandas`
+***Note:**
+macOS and Linux may require additional system dependencies. Using Conda is strongly recomended since it already has all necessary libraires installed automatically. Pip installation may fail unless GDAL is already configured.*
 
-### 3.3 Recommended Installation
+### Installing
+No installation is required beyond downloading the files. 
+1. Download or copy the project folder containing
+  - `main.py`
+2. Ensure the project directory has write permissions
+3. No modifications to files or folders are necessary. All `downloads/` and `clipped/` directories are generated automatically.
 
-**Using Conda (recommended):**
-conda create -n gis_project python=3.11
-conda activate gis_project
-conda install -c conda-forge geopandas requests
 
-powershell
-Copy code
+## File Overview
 
-**Using pip (only if GDAL stack already configured):**
-pip install geopandas requests
+### `main.py`
+Contains the full logic:
+- Download functions  
+- ZIP extraction  
+- Boundary creation (state, city, FIPS)  
+- Layer clipping  
+- Console interaction  
 
-yaml
-Copy code
-
-### 3.4 Operating System
-Compatible with **Windows**, **macOS**, and **Linux**.
-
-### 3.5 Internet Requirement
-Internet access is required on the **first run** to download TIGER/Line files.  
-Downloaded files are cached and reused.
-
----
-
-## 4. Running the Program
-
-### 4.1 Project Structure (created automatically)
-GIS_Project_Starter/
-├── downloads/ # raw TIGER ZIPs and extracted shapefiles
-└── clipped/ # final clipped outputs
-
-css
-Copy code
-
-### 4.2 Running the Script
-From the folder containing `main.py`:
-python main.py
-
-markdown
-Copy code
-
-You will be prompted to choose:
-- `state`
-- `city`
-- `fips`
-
-### Example Inputs
-
-**State Mode**
-Enter 'state', 'city', or 'fips': state
-Enter state name or 2-letter code: Texas
-
-markdown
-Copy code
-
-**City Mode**
-Enter 'state', 'city', or 'fips': city
-Enter city/place name: Dallas
-Enter state name or code: Texas
-
-markdown
-Copy code
-
-**County FIPS Mode**
-Enter 'state', 'city', or 'fips': fips
-Enter 5-digit county FIPS code: 48113
-
-yaml
-Copy code
-
----
-
-## 5. Input and Output Files
-
-### 5.1 Inputs
+### Input Files
 The program automatically downloads:
-
 - `tl_2020_us_state.zip`
 - `tl_2020_us_county.zip`
 - `tl_2020_<STATEFP>_prisecroads.zip`
@@ -129,24 +72,68 @@ The program automatically downloads:
 
 No initial datasets are required.
 
-### 5.2 Outputs
+### Output Files
+After running, the program generates:
+
+**GIS_Project_Starter/  
+├── downloads/** *-  the raw TIGER ZIPs and extracted shapefiles*   
+**└── clipped/** *-  the final clipped outputs*  
+
+Clipped output shapefiles include: 
+- `roads_clipped.shp`
+- `counties_clipped.shp`
+- `city_boundary.shp` *(city mode)*
+
 All results are written to:
 GIS_Project_Starter/clipped/
 
-yaml
-Copy code
 
-Outputs include:
+## Executing program
+From the project directory, run: 
 
-- `roads_clipped.shp` — PRISECROADS clipped to boundary  
-- `counties_clipped.shp` — counties clipped to boundary  
-- `city_boundary.shp` — city boundary polygon (city mode only)
+python main.py
 
----
+The script will then prompt for a boundary selection: 
+- `state`
+- `city`
+- `fips`
 
-## 6. Data Sources and Reference Code
+## Example Usage
+1. **State Mode**
+Enter 'state', 'city', or 'fips': state
+Enter state name or 2-letter code: Texas
 
-### 6.1 TIGER/Line Data Sources
+2. **City Mode**
+Enter 'state', 'city', or 'fips': city
+Enter city/place name: Dallas
+Enter state name or code: Texas
+
+3. **County FIPS Mode**
+Enter 'state', 'city', or 'fips': fips
+Enter 5-digit county FIPS code: 48113
+
+
+## Help
+Common issues include: 
+
+### GeoPandas fails to import
+Install using Conda:
+conda install -c conda-forge geopandas
+
+### City not found
+Ensure spelling matches TIGER data naming.
+
+### FIPS rejected
+FIPS must be eaxctly **5 digits** (e.g., 48113)
+
+### No roads in output
+Some small cities have no primary/secondary roads in PRISECROADSD.  
+There is no built-in command, but you can try re-running the script if the input was wrong.
+
+
+## Data Sources and Reference Code
+
+### TIGER/Line Data Sources
 Data is retrieved from:
 
 https://www2.census.gov/geo/tiger/TIGER2020/
@@ -157,18 +144,16 @@ Directories used:
 - `PRISECROADS/`
 - `PLACE/`
 
-### 6.2 Reference Code
+### Reference Code
 All code was written specifically for this project.  
 Concepts are based on standard usage patterns from:
 - GeoPandas documentation  
 - Python `requests` examples  
 - TIGER/Line attribute documentation (STATEFP, GEOID, NAME)
 
----
+## Notes for Instructor
 
-## 7. Notes for Instructor / Evaluator
-
-### 7.1 How to Verify
+### How to Verify
 1. Install Python environment and dependencies.  
 2. Run the script.  
 3. Test all three boundary modes.  
@@ -178,22 +163,13 @@ Concepts are based on standard usage patterns from:
    - Roads and counties are clipped correctly  
    - City boundary exists in city mode  
 
-### 7.2 Assumptions and Limitations
+### Assumptions and Limitations
 - City matching is exact (case-insensitive).  
 - TIGER URLs must remain valid.  
 - Internet needed for initial download.  
-- CRS is assumed to be present in TIGER files (it is).  
+- CRS is assumed to be present in TIGER files (it is).
 
-### 7.3 Dataset Submission Guidance
-The script downloads all required datasets automatically.  
-If required by course policy, you may submit:
-- Example clipped outputs  
-- A ZIP of your `clipped/` directory  
-
----
-
-## 8. File Overview
-
+### Final File Overview
 ### `main.py`
 Contains the full logic:
 - Download functions  
@@ -204,6 +180,14 @@ Contains the full logic:
 
 ### Runtime-created folders:
 - `GIS_Project_Starter/downloads/` — downloaded TIGER data  
-- `GIS_Project_Starter/clipped/` — final analysis outputs  
+- `GIS_Project_Starter/clipped/` — final analysis outputs 
 
----
+
+## Authors
+**Madelyn Schumuhl**  
+(Project Contributor)  
+mjs220001@utdallas.edu  
+
+**Abigail McFarland**  
+(Project Contributor)  
+arm220022@utdallas.edu
